@@ -15,7 +15,7 @@ $(document).ready(function() {
     }
     Ilectro.cargarMenuPagina();
     Ilectro.cargarMenuLateral("ingenieriaElectrica", "INGELEC");
-        
+
 });
 var Ilectro = {
 	nombreMenuSeleccionado : "",
@@ -28,22 +28,22 @@ var Ilectro = {
 					var nombreDelMenu = menu.nombreMenu;
 					if(menu.nombreMenu.includes(" "))
 						nombreDelMenu = menu.nombreMenu.replace(" ", "<br>");
-                                        
+
                                         if(menu.codigoDeLaOpcion === "CONTACTO"){
                                             menuSuperior += "<a href='#' class='contacto' data-target='#formularioContacto'>" + nombreDelMenu + "</a>" +
 									"<ul class=''>";
                                         }else
-                                            menuSuperior += "<a href='#redireccionContenido' class='dropdown-toggle menuSuperior' codigo-opcion='" + menu.codigoDeLaOpcion + "' data-toggle='dropdown'>" + nombreDelMenu + "</a>" +
+                                            menuSuperior += "<a href='#contenidoMenuLateral' class='dropdown-toggle menuSuperior' codigo-opcion='" + menu.codigoDeLaOpcion + "' data-toggle='dropdown'>" + nombreDelMenu + "</a>" +
 									"<ul class='dropdown-menu'>";
 				}else{
-                                    menuSuperior += "<li><a href='#redireccionContenido' codigo-opcion='" + menu.codigoDeLaOpcion + "'><i class='icon-right-open'></i>" + menu.nombreMenu + "</a></li>";
+                                    menuSuperior += "<li><a href='#contenidoMenuLateral' codigo-opcion='" + menu.codigoDeLaOpcion + "'><i class='icon-right-open'></i>" + menu.nombreMenu + "</a></li>";
 				}
 			});
 			menuSuperior += "</ul></li>";
 		});
-		menuSuperior += "</ul>";		
+		menuSuperior += "</ul>";
 		$("#contenedorMenuSuperior").html(menuSuperior);
-		
+
 		Ilectro.inicializarEventos();
 	},
 	cargarMenuLateral : function(nombreMenuArray, codigoMenuActivo){
@@ -79,7 +79,7 @@ var Ilectro = {
 	inicializarEventos : function(){
 		$( "li a.menuSuperior" ).hover(function() {
 			if(Ilectro.nombreMenuSeleccionado !== $( this ).parent().attr("nombreMenu") && Ilectro.nombreMenuSeleccionado !== ""){
-				$( "ul li[nombreMenu=" + Ilectro.nombreMenuSeleccionado + "]" ).removeClass("open");	
+				$( "ul li[nombreMenu=" + Ilectro.nombreMenuSeleccionado + "]" ).removeClass("open");
 			}
 		    $( this ).parent().addClass("open");
 		    Ilectro.nombreMenuSeleccionado = $( this ).parent().attr("nombreMenu");
@@ -94,13 +94,46 @@ var Ilectro = {
 				var valorCodigo = $(this).attr("codigo-opcion");
 				Ilectro.cargarMenuLateral(Ilectro.nombreMenuSeleccionado, valorCodigo);
 			}
-                        window.location.href = "#redireccionContenido";
+                        window.location.href = "#contenidoMenuLateral";
 		});
-                
-                $(".contacto").click(function(){
-                    $("#formularioContacto").modal("show");
+
+        $(".contacto").click(function(){
+            $("#formularioContacto").modal("show");
 		});
-                
+
+		$("#enviar").click(function(){
+			var informacionEmail = {nombresApellidos : $("#nombresApellidos").val(),
+			nombreEmpresa : $("#nombreEmpresa").val(),
+			correoElectronico : $("#correoElectronico").val(),
+			asunto : $("#asunto").val(),
+			mensaje : $("#mensaje").val()};
+
+			$.ajax({
+				type: "POST",
+				url: "../contacto/contacto.php",
+				data: informacionEmail,
+				success: function(){
+					$("#mensajeUsuario").html("La informaci&oacute;n ha sido enviada exitosamente, pronto nos contactaremos con usted.");
+					$("#formularioContacto").modal("hide");
+					$("#mensajeInformacion").modal("show");
+					$("#nombresApellidos").val(),
+			        $("#nombresApellidos, #nombreEmpresa, #correoElectronico, #asunto, #mensaje").val("");
+				},
+				error: function(error){
+					var mensajeUsuario = "La informaci&oacute;n no ha sido enviada correctamente debido a inconvenientes t&eacute;cnicos.<br><br>Detalles: " + error.status + " " + (error.message == null ? "" : ", " + error.message);
+					if(error.status === 404)
+						mensajeUsuario = "La informaci&oacute;n no ha sido enviada correctamente debido a inconvenientes t&eacute;cnicos. No se encuentra la p&aacute;gina 'contacto' para enviar la informaci&oacute;n.";
+
+					$("#mensajeUsuario").html(mensajeUsuario);
+					 //$("#formularioContacto").modal("hide");
+					 $("#mensajeInformacion").modal("show");
+				}
+			});
+
+
+		});
+
+
+
 	}
 };
-
