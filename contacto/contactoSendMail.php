@@ -23,7 +23,7 @@ $mail->Host = 'smtp.gmail.com'; // Especificar el servidor SMTP reemplazando por
 $mail->SMTPAuth = true;
 
 $mail->Username = 'contacto.ilectro@gmail.com';                 // Nombre de usuario SMTP donde debe ir la cuenta de correo a utilizar para el envio
-$mail->Password = 'JGWCS&V+D=5917y2305pa$$word';                           // Clave SMTP donde debe ir la clave de la cuenta de correo a utilizar para el envio
+$mail->Password = '';                           // Clave SMTP donde debe ir la clave de la cuenta de correo a utilizar para el envio
 $mail->SMTPSecure = 'tls';
 $mail->Port = 587;                                    // Puerto SMTP
 
