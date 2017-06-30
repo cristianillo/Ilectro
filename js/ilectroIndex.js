@@ -15,7 +15,10 @@ $(document).ready(function() {
     }
     Ilectro.cargarMenuPagina();
     Ilectro.cargarMenuLateral("ingenieriaElectrica", "INGELEC");
-
+    $(document).on('submit',function (e) {
+      e.preventDefault();
+      return false;
+    });
 });
 var Ilectro = {
 	nombreMenuSeleccionado : "",
@@ -101,41 +104,56 @@ var Ilectro = {
             $("#formularioContacto").modal("show");
 		});
 
-		$("#enviar").click(function(){
-			var informacionEmail = {mensajeHtml : Ilectro.armarMensajeHtml($("#nombresApellidos").val() ,$("#nombreEmpresa").val(), $("#correoElectronico").val(), $("#mensaje").val()),
-			asunto : $("#asunto").val()};
-
-			$.ajax({
-				type: "POST",
-				url: "http://localhost/contacto/contacto.php",
-				data: informacionEmail,
-				success: function(respuesta){
-
-					var respuestaMail = JSON.parse(respuesta);
-					if(respuestaMail.codigoErrorApp == 0){
-						$("#mensajeUsuario").html("La informaci&oacute;n ha sido enviada exitosamente, pronto nos contactaremos con usted.");
-						$("#formularioContacto").modal("hide");
-						$("#mensajeInformacion").modal("show");
-						$("#nombresApellidos").val(),
-						$("#nombresApellidos, #nombreEmpresa, #correoElectronico, #asunto, #mensaje").val("");
-					}else{
-						$("#mensajeUsuario").html("La informaci&oacute;n no ha sido enviada correctamente debido a inconvenientes t&eacute;cnicos. <br><br>Error enviando mensaje: " + respuestaMail.errorSendMail);
-						$("#mensajeInformacion").modal("show");
-					}
-				},
-				error: function(error){
-					var mensajeUsuario = "La informaci&oacute;n no ha sido enviada correctamente debido a inconvenientes t&eacute;cnicos.<br><br>Detalles: " + error.status + " " + (error.message == null ? "" : ", " + error.message);
-					if(error.status === 404)
-						mensajeUsuario = "La informaci&oacute;n no ha sido enviada correctamente debido a inconvenientes t&eacute;cnicos. No se encuentra la p&aacute;gina 'contacto' para enviar la informaci&oacute;n.";
-
-					$("#mensajeUsuario").html(mensajeUsuario);
-					 $("#mensajeInformacion").modal("show");
-				}
-			});
-
-
-		});
 	},
+  enviar : function(evento){
+    if($("#contacto-form")[0].checkValidity()){
+    var informacionEmail = {mensajeHtml : Ilectro.armarMensajeHtml($("#nombresApellidos").val() ,$("#nombreEmpresa").val(), $("#correoElectronico").val(), $("#mensaje").val()),
+    asunto : $("#asunto").val()};
+
+    $.ajax({
+      type: "POST",
+      url: "http://www.ilectro.com.co/contacto/contactoSendMail.php",
+      data: informacionEmail,
+      success: function(respuesta){
+
+        var respuestaMail = JSON.parse(respuesta);
+        if(respuestaMail.codigoErrorApp == 0){
+          $("#mensajeUsuario").html("La informaci&oacute;n ha sido enviada exitosamente, pronto nos contactaremos con usted.");
+          $("#formularioContacto").modal("hide");
+          $("#mensajeInformacion").modal("show");
+          $("#nombresApellidos").val(),
+          $("#nombresApellidos, #nombreEmpresa, #correoElectronico, #asunto, #mensaje").val("");
+        }else{
+          $("#mensajeUsuario").html("La informaci&oacute;n no ha sido enviada correctamente debido a inconvenientes t&eacute;cnicos. <br><br>Error enviando mensaje: " + respuestaMail.errorSendMail);
+          $("#mensajeInformacion").modal("show");
+        }
+      },
+      error: function(error){
+        var mensajeUsuario = "La informaci&oacute;n no ha sido enviada correctamente debido a inconvenientes t&eacute;cnicos.<br><br>Detalles: " + error.status + " " + (error.message == null ? "" : ", " + error.message);
+        if(error.status === 404)
+          mensajeUsuario = "La informaci&oacute;n no ha sido enviada correctamente debido a inconvenientes t&eacute;cnicos. No se encuentra la p&aacute;gina 'contacto' para enviar la informaci&oacute;n.";
+
+        $("#mensajeUsuario").html(mensajeUsuario);
+         $("#mensajeInformacion").modal("show");
+      }
+    });
+  }
+  },
+  evaluarFormulario : function() {
+    var respuesta = true;
+    $.each($("#contacto-form").find("input"), function(i, inputForm){
+      if($.trim($(inputForm).val()) == ""){
+        respuesta = false;
+      }
+    });
+    $.each($("form").find("textarea"), function(i, textareaForm){
+      if($.trim($(textareaForm).text()) == ""){
+        respuesta = false;
+      }
+    });
+
+    return respuesta;
+  },
 	armarMensajeHtml : function(nombresApellidos, nombreEmpresa, correoElectronico, mensaje){
 		var estructuraHtml = '<!DOCTYPE html>' +
 "<html>" +

@@ -628,7 +628,7 @@
 
                         <div class="modal fade" id="formularioContacto" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" >
                                 <div class="modal-dialog">
-                                    <!--form  action="#"-->
+                                    <form id="contacto-form">
                                         <div class="modal-content">
 
                                             <div class="modal-header">
@@ -665,17 +665,16 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-sm btn-dark" data-dismiss="modal">Cerrar</button>
-                                                <button type="button" id="enviar" class="submit-button btn btn-sm btn-default">Enviar</button>
+                                                <button type="submit" class="submit-button btn btn-sm btn-default" onclick="Ilectro.enviar()">Enviar</button>
                                             </div>
 
                                         </div>
-                                    <!--/form-->
+                                    </form>
                                 </div>
                             </div>
 
-							<div class="modal fade" id="mensajeInformacion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" >
+														<div class="modal fade" id="mensajeInformacion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" >
                                 <div class="modal-dialog">
-                                    <!--form  action="#"-->
                                         <div class="modal-content">
 
                                             <div class="modal-header">
@@ -685,9 +684,7 @@
                                             <div class="modal-body">
                                                 <p id="mensajeUsuario"></p>
                                             </div>
-
                                         </div>
-                                    <!--/form-->
                                 </div>
                             </div>
 
